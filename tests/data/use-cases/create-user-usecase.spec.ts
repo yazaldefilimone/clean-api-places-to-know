@@ -7,7 +7,8 @@ class CreateUserUseCase{
   async execute(dataReceivedOfParamsUser:UserDTO):Promise<void>{
     this.name = dataReceivedOfParamsUser.name
     this.place = dataReceivedOfParamsUser.place
-    this.createUserRepository.findById(dataReceivedOfParamsUser.id as string);
+    const resultOfRepositoryOfFindId = await this.createUserRepository.findById(dataReceivedOfParamsUser.id as string);
+    return resultOfRepositoryOfFindId;
   }
 }
 
@@ -19,19 +20,21 @@ type UserDTO ={
 
 interface IcreateUserRepository {
   add: (dataReceivedOfUser:UserDTO) => Promise<void>;
-  findById: (id:string) => Promise<void>;
+  findById: (id:string) => Promise<UserDTO | any>;
 }
 
 class CreateUserRepositorySpy implements IcreateUserRepository{
-  dataAdd = {} as UserDTO;
+  dataAdd = [] as Array<UserDTO>;
   dataId:string = '';
 
   async add(dataReceivedOfUser:UserDTO):Promise<void>{
-    this.dataAdd = dataReceivedOfUser;
+    this.dataAdd.push(dataReceivedOfUser);
   }
 
-  async findById(id:string):Promise<void>{
+  async findById(id:string):Promise<UserDTO | any>{
     this.dataId = id
+    const result = this.dataAdd.find(value => value.id === id);
+    return result;
   }
 }
 
@@ -70,6 +73,17 @@ describe("CreateUserUseCase", () => {
     }
     await sut.execute(data);
     expect(createUserRepository.dataId).toEqual(data.id);
+  })
+  
+  it('Should CreateUserUseCase call createUserRepository.findById with id not exists of db its not return user', async () => { 
+    const { sut, createUserRepository }   = makeSut();
+    const data = {
+      id:'1',
+      name:"valid_name",
+      place:"http://place.com"
+    }
+    const response = await sut.execute(data);
+    expect(response).toEqual(undefined);
   })
 
 })
