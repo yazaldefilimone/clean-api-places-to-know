@@ -3,7 +3,7 @@ import { UserDTO } from "@/data/contracts/dtos";
 import { IcreateUserRepository } from "@/data/contracts/repos";
 
 class CreateUserRepositorySpy implements IcreateUserRepository{
-  dataAdd = [] as Array<UserDTO>;
+  dataAdd = [{ id:"1", name:"moz", place:"http://place.com" }] as Array<UserDTO>;
   dataId:string = '';
 
   async add(dataReceivedOfUser:UserDTO):Promise<void>{
@@ -32,38 +32,49 @@ const makeSut = ():ISut => {
 
 describe("CreateUserUseCase", () => {
 
-  it('Should CreateUserUseCase receive correct name and place when call execute', async () => { 
+  it('Espero que CreateUserUseCase vai receber corretamente os dados passados.', async () => { 
     const { sut }   = makeSut();
     const data = {
-      name:"valid_name",
-      place:"http://place.com"
+      name:"any_name",
+      place:"any_place"
     }
     await sut.execute(data);
     expect(sut.name).toEqual(data.name);
     expect(sut.place).toEqual(data.place);
   })
   
-  it('Should CreateUserUseCase call createUserRepository.findById with correct id', async () => { 
+  it('Espero que o CreateUserUseCase vai chamar o createUserRepository.findById com id correcto.', async () => { 
     const { sut, createUserRepository }   = makeSut();
     const data = {
-      id:'1',
-      name:"valid_name",
-      place:"http://place.com"
+      id:'any_id',
+      name:"any_name",
+      place:"any_place"
     }
     await sut.execute(data);
     expect(createUserRepository.dataId).toEqual(data.id);
   })
   
-  it('Should CreateUserUseCase call createUserRepository.findById with id not exists of db its not return user', async () => { 
+  it('Espero que Quando chamar o createUserRepository.findById com o id que nao existe do banco dados ele nao retorne nada', async () => { 
     const { sut }   = makeSut();
     const data = {
-      id:'1',
-      name:"valid_name",
-      place:"http://place.com"
+      id:'any_id',
+      name:"any_name",
+      place:"any_place"
     }
     const response = await sut.execute(data);
     expect(response).toEqual(undefined);
   })
+  
+  it('Espero que Quando chamar o createUserRepository.findById com o id que  existe do banco dados ele retorne o user', async () => { 
+    const { sut }   = makeSut();
+    const data = {
+      id:'1',
+      name:"moz",
+      place:"http://place.com"
+    }
 
+    const response = await sut.execute(data);
+    expect(response).toEqual(data); 
+  })
 })
 
