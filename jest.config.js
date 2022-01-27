@@ -5,7 +5,6 @@ module.exports = {
     '!<rootDir>/src/**/index.ts'
   ],
   coverageDirectory: 'coverage',
-  coverageProvider: 'babel',
   moduleNameMapper: {
     '@/tests/(.+)': '<rootDir>/tests/$1',
     '@/(.+)': '<rootDir>/src/$1'
@@ -19,5 +18,4 @@ module.exports = {
     '\\.ts$': 'ts-jest'
   },
   clearMocks: true,
-  setupFiles: ['dotenv/config']
 }
