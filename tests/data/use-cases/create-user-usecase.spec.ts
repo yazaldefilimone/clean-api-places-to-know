@@ -3,13 +3,18 @@ import { UserDTO } from "@/data/contracts/dtos";
 import { IcreateUserRepository } from "@/data/contracts/repos";
 
 class CreateUserRepositorySpy implements IcreateUserRepository{
-  dataAdd = [{ id:"1", name:"moz", place:"http://place.com" }] as Array<UserDTO>;
+
+  dataAdd = [{ id:"1", name:"moz", place:"http://place.com", created_at:"1726288119293" }] as Array<UserDTO>;
   dataId:string = '';
   callMethodAddCount:number = 0;
 
-  async add(dataReceivedOfUser:UserDTO):Promise<void>{
+  async add(dataReceivedOfUser:UserDTO):Promise<UserDTO>{
     this.callMethodAddCount++;
     this.dataAdd.push(dataReceivedOfUser);
+    return {
+      ...dataReceivedOfUser,
+      created_at:new Date()
+    }
   }
 
   async findById(id:string):Promise<UserDTO | any>{
@@ -63,8 +68,8 @@ describe("CreateUserUseCase", () => {
       name:"any_name",
       place:"any_place"
     }
-    const response = await sut.execute(data);
-    expect(response).toEqual(undefined);
+   const result =  await sut.execute(data);
+    expect(result).toHaveProperty('created_at'); 
   })
   
   it('Espero que Quando chamar o createUserRepository.findById com o id que  existe do banco dados ele retorne o user', async () => { 
@@ -72,14 +77,14 @@ describe("CreateUserUseCase", () => {
     const data = {
       id:'1',
       name:"moz",
-      place:"http://place.com"
+      place:"http://place.com",
+      created_at: '1726288119293'
     }
 
-    const response = await sut.execute(data);
-    expect(response).toEqual(data); 
-  })
-  
-  it('Espero que Quando chamar o createUserRepository.findById e nao retornar  o user ele vai chamar o createUserRepository.add', async () => { 
+   const result =  await sut.execute(data);
+    expect(result).toEqual(data)
+  })  
+ it('Espero que Quando chamar o createUserRepository.findById e nao retornar  o user ele vai chamar o createUserRepository.add', async () => { 
     const { sut, createUserRepository }   = makeSut();
     const data = {
       id:'2',
@@ -89,6 +94,18 @@ describe("CreateUserUseCase", () => {
     await sut.execute(data);
 
     expect(createUserRepository.callMethodAddCount).toBe(1); 
+  })
+ 
+  it('Espero que Quando chamar o createUserRepository.findById com o id que nao existe o createUserRepository.add vai retornar um novo usuario', async () => { 
+    const { sut }  = makeSut();
+    const data = {
+      id:'2',
+      name:"moz",
+      place:"http://place.com"
+    }
+   const result =  await sut.execute(data);
+
+    expect(result).toHaveProperty('created_at'); 
   })
 
 })

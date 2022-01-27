@@ -14,6 +14,8 @@ export class CreateUserUseCase{
       return resultOfRepositoryOfFindId;
     }
 
-    await this.createUserRepository.add(dataReceivedOfParamsUser);
+    const resultOfRepositoryOfAdd = await this.createUserRepository.add(dataReceivedOfParamsUser);
+
+    return resultOfRepositoryOfAdd;
   }
 }
