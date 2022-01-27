@@ -10,6 +10,10 @@ export class CreateUserUseCase{
     this.name = dataReceivedOfParamsUser.name
     this.place = dataReceivedOfParamsUser.place
     const resultOfRepositoryOfFindId = await this.createUserRepository.findById(dataReceivedOfParamsUser.id as string);
-    return resultOfRepositoryOfFindId;
+    if(resultOfRepositoryOfFindId){
+      return resultOfRepositoryOfFindId;
+    }
+
+    await this.createUserRepository.add(dataReceivedOfParamsUser);
   }
 }

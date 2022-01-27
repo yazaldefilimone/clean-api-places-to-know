@@ -5,8 +5,10 @@ import { IcreateUserRepository } from "@/data/contracts/repos";
 class CreateUserRepositorySpy implements IcreateUserRepository{
   dataAdd = [{ id:"1", name:"moz", place:"http://place.com" }] as Array<UserDTO>;
   dataId:string = '';
+  callMethodAddCount:number = 0;
 
   async add(dataReceivedOfUser:UserDTO):Promise<void>{
+    this.callMethodAddCount++;
     this.dataAdd.push(dataReceivedOfUser);
   }
 
@@ -76,5 +78,18 @@ describe("CreateUserUseCase", () => {
     const response = await sut.execute(data);
     expect(response).toEqual(data); 
   })
+  
+  it('Espero que Quando chamar o createUserRepository.findById e nao retornar  o user ele vai chamar o createUserRepository.add', async () => { 
+    const { sut, createUserRepository }   = makeSut();
+    const data = {
+      id:'2',
+      name:"moz",
+      place:"http://place.com"
+    }
+    await sut.execute(data);
+
+    expect(createUserRepository.callMethodAddCount).toBe(1); 
+  })
+
 })
 
