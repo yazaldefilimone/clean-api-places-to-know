@@ -35,11 +35,23 @@ class CreateUserRepositorySpy implements IcreateUserRepository{
   }
 }
 
+type ISut = {
+  sut: CreateUserUseCase,
+  createUserRepository:CreateUserRepositorySpy
+}
+const makeSut = ():ISut => {
+  const createUserRepository = new CreateUserRepositorySpy()
+  const sut = new CreateUserUseCase(createUserRepository);
+  return {
+    sut,
+    createUserRepository
+  }
+}
+
 describe("CreateUserUseCase", () => {
 
   it('Should CreateUserUseCase receive correct name and place when call execute', async () => { 
-    const createUserRepository = new CreateUserRepositorySpy()
-    const sut  = new CreateUserUseCase(createUserRepository);
+    const { sut }   = makeSut();
     const data = {
       name:"valid_name",
       place:"http://place.com"
@@ -50,8 +62,7 @@ describe("CreateUserUseCase", () => {
   })
   
   it('Should CreateUserUseCase call createUserRepository.findById with correct id', async () => { 
-    const createUserRepository = new CreateUserRepositorySpy()
-    const sut  = new CreateUserUseCase(createUserRepository);
+    const { sut, createUserRepository }   = makeSut();
     const data = {
       id:'1',
       name:"valid_name",
