@@ -76,7 +76,7 @@ describe("CreateUserUseCase", () => {
   })
   
   it('Should CreateUserUseCase call createUserRepository.findById with id not exists of db its not return user', async () => { 
-    const { sut, createUserRepository }   = makeSut();
+    const { sut }   = makeSut();
     const data = {
       id:'1',
       name:"valid_name",
