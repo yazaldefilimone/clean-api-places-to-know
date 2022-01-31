@@ -1,6 +1,6 @@
-import {  UserDTO } from "../../../src/data/contracts/dtos";
-import { IPostGreFindRepository } from "../../../src/infra/helpers/repos";
-import { FindByEmailUserRepository } from "../../../src/infra/repos";
+import {  UserDTO } from "@/data/contracts/dtos";
+import { IPostGreFindRepository } from "@/infra/helpers/repos";
+import { FindByEmailUserRepository } from "@/infra/repos";
 
 const PostGreRepository:jest.Mocked<IPostGreFindRepository> = {
   findOne:jest.fn()
