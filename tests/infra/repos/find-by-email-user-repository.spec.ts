@@ -59,6 +59,17 @@ describe('FindByEmailUserRepository', () => {
     await sut.findById(id)
     expect(postGreRepository.findOne).toHaveBeenCalledTimes(1);
   })
+  it('Espero que quando chamar FindByEmailUserRepository.findById sem o id ele retorn um Erro', async () => {
+    const { sut, postGreRepository } = makeSut();
+
+    postGreRepository.findOne.mockResolvedValue(undefined);
+
+    let id = 'id_is_not_exists';
+
+    const result = await sut.findById(id)
+
+    expect(result.value).toBe(undefined);
+  })
 
 
 
