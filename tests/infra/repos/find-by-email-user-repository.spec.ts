@@ -51,6 +51,14 @@ describe('FindByEmailUserRepository', () => {
     await sut.findById(id)
     expect(postGreRepository.findOne).toHaveBeenCalledWith(id);
   })
+  it('Espero que quando chamar FindByEmailUserRepository.findById seja chamado o method findOne', async () => {
+    const { sut, postGreRepository } = makeSut();
+
+    let id = 'any_id';
+
+    await sut.findById(id)
+    expect(postGreRepository.findOne).toHaveBeenCalledTimes(1);
+  })
 
 
 
