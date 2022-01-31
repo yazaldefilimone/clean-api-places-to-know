@@ -37,19 +37,35 @@ const makeSut = ():SUT => {
     
   }
 }
+
+const returnUserFake = ():UserDTO => {
+  let user:UserDTO = {
+    id:'any_id',
+    name:'any_name',
+    email:'any_email',
+    password:'any_password',
+    created_at:'any_date'
+  };
+  
+  return user
+}
+
+
 describe('AddUserRepository', () => {
   it('Espero que quando chamar AddUserRepository.add seja chamado com os parametros certos', async () => {
     const { sut, postGreRepository } = makeSut();
 
-    let user:UserDTO = {
-      id:'any_id',
-      name:'any_name',
-      email:'any_email',
-      password:'any_password',
-      created_at:'any_date'
-    };
-    await sut.add(user)
+    await sut.add(returnUserFake())
 
-    expect(postGreRepository.add).toHaveBeenCalledWith(user);
+    expect(postGreRepository.add).toHaveBeenCalledWith(returnUserFake());
   })
+  
+  it('Espero que quando chamar AddUserRepository.add seja chamado o method save', async () => {
+    const { sut, postGreRepository } = makeSut();
+
+    await sut.add(returnUserFake())
+
+    expect(postGreRepository.add).toHaveBeenCalledTimes(1);
+  })
+
 })
