@@ -3,7 +3,7 @@ import { IAddUserRepository } from "@/data/contracts/repos";
 
 
 interface IPostGreAddRepository {
-   add: (data:UserDTO) => Promise<UserDTO>;
+   add: (data:UserDTO) => Promise<undefined>;
 }
 
 
@@ -66,6 +66,17 @@ describe('AddUserRepository', () => {
     await sut.add(returnUserFake())
 
     expect(postGreRepository.add).toHaveBeenCalledTimes(1);
+  })
+  
+  it('Espero que quando chamar AddUserRepository.add com os parametros certos ele retorne undefined', async () => {
+    const { sut, postGreRepository } = makeSut();
+
+    postGreRepository.add.mockResolvedValue(undefined);
+
+
+    const result = await sut.add(returnUserFake())
+
+    expect(result).toBe(undefined);
   })
 
 })
