@@ -4,5 +4,5 @@ import { AlreadyExistsError } from "@/domain/erros";
 
 
 export interface ICreateUserUseCase{
-  execute:(dataReceivedParamsOfUser:User) => Promise<Either<AlreadyExistsError ,User>>
+  execute:(infoDataUser:User) => Promise<Either<AlreadyExistsError ,User>>
 }
