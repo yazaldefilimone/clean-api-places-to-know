@@ -1,7 +1,7 @@
 import { IfindByEmailUserRepository, IAddUserRepository } from "@/data/contracts/repos";
-import { UserDTO  } from "../../../src/data/contracts/dtos";
-import { Either, right, left } from "../../../src/shared/error-handler/either";
-import { CreateUserUseCase } from "../../../src/data/use-cases";
+import { UserDTO  } from "@/data/contracts/dtos";
+import { Either, right, left } from "@/shared/error-handler/either";
+import { CreateUserUseCase } from "@/data/use-cases";
 
 const FakeDatabase = {
   dataAdd : [{ id:"1", name:"moz", place:"http://place.com", created_at:"1726288119293" }] as Array<UserDTO>,
