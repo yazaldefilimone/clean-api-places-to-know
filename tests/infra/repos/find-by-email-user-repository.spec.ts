@@ -53,8 +53,9 @@ describe('FindByEmailUserRepository', () => {
     const { sut, postGreRepository } = makeSut();
 
     const userDB : UserDTO= {
-      id:'id_is_exists';
+      id:'id_is_exists',
       name:"any_name",
+      password:"any_password",
       email:'any_email',
       created_at:"1729192727266"
     }
