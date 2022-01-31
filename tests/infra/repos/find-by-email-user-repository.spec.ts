@@ -1,30 +1,8 @@
-import { IfindByEmailUserRepository } from "../../../src/data/contracts/repos";
 import {  UserDTO } from "../../../src/data/contracts/dtos";
-import { Either, right, left } from "../../../src/shared/error-handler/either";
+import { IPostGreFindRepository } from "../../../src/infra/helpers/repos";
+import { FindByEmailUserRepository } from "../../../src/infra/repos";
 
-
-interface IPostGreRepository{
-  findOne:() => Promise<any>
-}
-
-
-class FindByEmailUserRepository implements IfindByEmailUserRepository{
-  constructor(private readonly postGreRepository:IPostGreRepository){}
-
-  async findById(id:string):Promise<Either<null | undefined, UserDTO>>{
-    const resultOrNull = await this.postGreRepository.findOne(id);
-
-    if(!resultOrNull){
-      return left(undefined);
-    }
-
-    return right(resultOrNull as UserDTO)
-  }
-}
-
-
-
-const PostGreRepository:jest.Mocked<IPostGreRepository> = {
+const PostGreRepository:jest.Mocked<IPostGreFindRepository> = {
   findOne:jest.fn()
 }
 
