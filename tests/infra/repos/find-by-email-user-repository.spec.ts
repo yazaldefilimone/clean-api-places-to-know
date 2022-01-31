@@ -59,7 +59,7 @@ describe('FindByEmailUserRepository', () => {
     await sut.findById(id)
     expect(postGreRepository.findOne).toHaveBeenCalledTimes(1);
   })
-  it('Espero que quando chamar FindByEmailUserRepository.findById sem o id ele retorn um Erro', async () => {
+  it('Espero que quando chamar FindByEmailUserRepository.findById sem o id que nao existe no DB ele retorn undefined ', async () => {
     const { sut, postGreRepository } = makeSut();
 
     postGreRepository.findOne.mockResolvedValue(undefined);
@@ -70,7 +70,22 @@ describe('FindByEmailUserRepository', () => {
 
     expect(result.value).toBe(undefined);
   })
+  
+  it('Espero que quando chamar FindByEmailUserRepository.findById com o.id que existe no DB ele retorne o user', async () => {
+    const { sut, postGreRepository } = makeSut();
 
+    const userDB : UserDTO= {
+      id:'id_is_exists';
+      name:"any_name",
+      email:'any_email',
+      created_at:"1729192727266"
+    }
+    postGreRepository.findOne.mockResolvedValue(userDB);
 
+    let id = 'id_is_exists';
 
+    const result = await sut.findById(id)
+
+    expect(result.value).toBe(userDB);
+  })
 })
