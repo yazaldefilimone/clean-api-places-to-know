@@ -16,7 +16,7 @@ class AddUserRepository implements IAddUserRepository{
   
   async add(data:UserDTO):Promise<UserDTO>{
     
-   const user =  await this.postGreRepository.add(data);
+   const user:UserDTO =  await this.postGreRepository.add(data) as any;
 
    return user
   }

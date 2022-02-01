@@ -4,7 +4,15 @@ import { Either, right, left } from "@/shared/error-handler/either";
 import { CreateUserUseCase } from "@/data/use-cases";
 
 const FakeDatabase = {
-  dataAdd : [{ id:"1", name:"moz", place:"http://place.com", created_at:"1726288119293" }] as Array<UserDTO>,
+  dataAdd : [
+    {
+      id:"1",
+      name:"moz",
+      email:"any_email", 
+      password:'any_password',
+      created_at:"2022-01-27T17:36:47.547Z"
+    }
+  ] as Array<UserDTO>,
   dataId : ''
 }
 
@@ -69,60 +77,49 @@ const makeSut = ():ISut => {
   }
 }
 
+const returnFakeData = ():UserDTO => {
+    const data:UserDTO = {
+      name:"any_name",
+      email:"any_email",
+      password:'any_password',
+      id:'any_id',
+      created_at: "2022-01-27T17:36:47.547Z"
+    }
+  return  data;
+}
 describe("CreateUserUseCase", () => {
 
   it('Espero que CreateUserUseCase vai receber corretamente os dados passados.', async () => { 
     const { sut }   = makeSut();
-    const data = {
-      name:"any_name",
-      place:"any_place"
-    }
+    const data = returnFakeData()
     await sut.execute(data);
     expect(sut.name).toEqual(data.name);
-    expect(sut.place).toEqual(data.place);
+    expect(sut.email).toEqual(data.email);
   })
   
   it('Espero que o CreateUserUseCase vai chamar o createUserRepository.findById com id correcto.', async () => { 
     const { sut, findUserByEmailRepository }   = makeSut();
-    const data = {
-      id:'any_id',
-      name:"any_name",
-      place:"any_place"
-    }
+    const data = returnFakeData()
     await sut.execute(data);
     expect(findUserByEmailRepository.fakeDatabase.dataId).toEqual(data.id);
   })
   
   it('Espero que Quando chamar o createUserRepository.findById com o id que nao existe do banco dados ele nao retorne nada', async () => { 
     const { sut }   = makeSut();
-    const data = {
-      id:'any_id',
-      name:"any_name",
-      place:"any_place"
-    }
+    const data = returnFakeData()
    const result =  await sut.execute(data);
     expect(result.value).toHaveProperty('created_at'); 
   })
   
   it('Espero que Quando chamar o createUserRepository.findById com o id que  existe do banco dados ele retorne o user', async () => { 
     const { sut }   = makeSut();
-    const data = {
-      id:'1',
-      name:"moz",
-      place:"http://place.com",
-      created_at: "2022-01-27T17:36:47.547Z"
-    }
-
+    const data = returnFakeData()
    const result =  await sut.execute(data);
     expect(result.value).toEqual(data)
   })  
   it('Espero que Quando chamar o createUserRepository.findById e nao retornar  o user ele vai chamar o createUserRepository.add', async () => { 
     const { sut, findUserByEmailRepository, addUserRepository }   = makeSut();
-    const data = {
-      id:'2',
-      name:"moz",
-      place:"http://place.com"
-    }
+    const data = returnFakeData()
     await sut.execute(data);
 
     expect(findUserByEmailRepository.callMethodFindCount).toBe(1); 
@@ -131,11 +128,7 @@ describe("CreateUserUseCase", () => {
  
   it('Espero que Quando chamar o createUserRepository.findById com o id que nao existe o createUserRepository.add vai retornar um novo usuario', async () => { 
     const { sut }  = makeSut();
-    const data = {
-      id:'2',
-      name:"moz",
-      place:"http://place.com"
-    }
+    const data = returnFakeData()
    const result =  await sut.execute(data);
 
     expect(result.value).toHaveProperty('created_at'); 
