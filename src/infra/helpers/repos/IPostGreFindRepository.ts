@@ -1,4 +1,5 @@
+import { UserDTO } from "@/data/contracts/dtos";
 
 export interface IPostGreFindRepository{
-  findOne:(data:any) => Promise<any>
+  findOne:(email:string) => Promise<undefined | UserDTO>
 }
