@@ -3,7 +3,7 @@ export type User = {
   name:string;
   email:string;
   password:string;
-  created_at?:string;
+  created_at?:Date;
 }
 
 
