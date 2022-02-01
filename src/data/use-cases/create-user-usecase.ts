@@ -1,8 +1,8 @@
 import { UserDTO } from "@/data/contracts/dtos";
 import { IAddUserRepository, IfindByEmailUserRepository } from "@/data/contracts/repos";
-import { Either, right, left } from "../../shared/error-handler/either";
-import { ICreateUserUseCase } from "../../domain/use-cases/user";
-import { AlreadyExistsError } from "../../domain/erros";
+import { Either, right, left } from "@/shared/error-handler/either";
+import { ICreateUserUseCase } from "@/domain/use-cases/user";
+import { AlreadyExistsError } from "@/domain/erros";
 
 export class CreateUserUseCase implements ICreateUserUseCase{
   name:string = '';
