@@ -1,10 +1,11 @@
-import {  UserDTO } from "../../../src/data/contracts/dtos";
-import { IfindByEmailUserRepository } from "../../../src/data/contracts/repos";
-import { Either, right, left } from "../../../src/shared/error-handler/either";
+import {  UserDTO } from "@/data/contracts/dtos";
+import { IfindByEmailUserRepository } from "@/data/contracts/repos";
+import { Either, right, left } from "@/shared/error-handler/either";
+import {IPostGreFindRepository} from "@/infra/helpers/repos";
 
 
 export class FindByEmailUserRepository implements IfindByEmailUserRepository{
-  constructor(private readonly postGreRepository:IPostGreRepository){}
+  constructor(private readonly postGreRepository:IPostGreFindRepository){}
 
   async findById(id:string):Promise<Either<null | undefined, UserDTO>>{
     const resultOrNull = await this.postGreRepository.findOne(id);
