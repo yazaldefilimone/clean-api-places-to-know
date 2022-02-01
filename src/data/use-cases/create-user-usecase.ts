@@ -6,7 +6,7 @@ import { AlreadyExistsError } from "../../domain/erros";
 
 export class CreateUserUseCase implements ICreateUserUseCase{
   name:string = '';
-  place:string = '';
+  email:string = '';
   
   constructor(
     private readonly addUserRepository:IAddUserRepository,
@@ -15,7 +15,7 @@ export class CreateUserUseCase implements ICreateUserUseCase{
 
   async execute(infoDataUser:UserDTO):Promise<Either<AlreadyExistsError, UserDTO>>{
     this.name = infoDataUser.name
-    this.place = infoDataUser.place
+    this.email = infoDataUser.email
 
     const UserOfSearchOrError = await this.findByEmailUserRepository.findById(infoDataUser.id as string);
     
