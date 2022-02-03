@@ -1,0 +1,6 @@
+export * from "./find-by-place-repository"
+export * from "./add-place-repository"
+export * from "./find-all-place-repository"
+export * from "./find-by-id-place-repository"
+export * from "./find-delete-place-repository"
+export * from "./find-update-place-repository"

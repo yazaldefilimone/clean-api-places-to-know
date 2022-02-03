@@ -1,4 +1,4 @@
-import { createUserFactore } from '@/main/factories/data/use-case/CreateUserFactore';
+import { createUserFactore } from '@/main/factories/data/use-case';
 import { CreateUserController } from "@/presentation/controllers/user";
 
 

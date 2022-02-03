@@ -1,137 +1,100 @@
-import { IfindByEmailUserRepository, IAddUserRepository } from "@/data/contracts/repos";
-import { UserDTO  } from "@/data/contracts/dtos";
-import { Either, right, left } from "@/shared/error-handler/either";
-import { CreateUserUseCase } from "@/data/use-cases";
+import { CreateUserUseCase } from "../../../src/data/use-cases";
+import { IAddUserRepository, IfindByEmailUserRepository} from '../../../src/data/contracts/repos'
+import { ICreateHash } from '../../../src/data/contracts/sacurity'
+import { UserDTO } from "../../../src/data/contracts/dtos"
+import { Either, left, right } from "../../../src/shared/error-handler/either"
+import { AlreadyExistsError } from "../../../src/domain/erros";
 
-const FakeDatabase = {
-  dataAdd : [
-    {
-      id:"1",
-      name:"moz",
-      email:"any_email", 
-      password:'any_password',
-      created_at:"2022-01-27T17:36:47.547Z"
+import { v4 } from 'uuid'
+const db:UserDTO[] = [];
+
+class FindByPlaceRepository implements IfindByEmailUserRepository{
+
+  async findByEmail({ email }:UserDTO | any):Promise<Either<undefined, UserDTO>>{
+   const result = db.find(user => user.email == email)
+    
+   if(!result){
+     return left(undefined)
+   }
+
+
+   return right(result as any)
+  }
+}
+
+
+class AddUserRepository implements IAddUserRepository{
+  async add(data: UserDTO):Promise<UserDTO>{
+    const dataUser = {
+      id:v4(),
+      ...data,
+      created_at: new Date('2022-02-03T09:34:39.462Z')
     }
-  ] as Array<UserDTO>,
-  dataId : ''
+    db.push(dataUser);
+
+    return dataUser
+  }
 }
 
-interface IfakeDatabase {
-  dataAdd:Array<UserDTO>,
-  dataId:string
-}
-class AddUserRepositorySpy implements IAddUserRepository{
-  callMethodAddCount:number = 0;
-  constructor(private readonly fakeDatabase:IfakeDatabase){}
 
-  async add(dataReceivedOfUser:UserDTO):Promise<UserDTO>{
-    this.callMethodAddCount++;
-     let user:UserDTO = {
-       ...dataReceivedOfUser,
-       created_at: "2022-01-27T17:36:47.547Z"
-     }
+class CreateHash implements ICreateHash{
+  async create(Input: ICreateHash.Input): Promise<string>{
   
-    this.fakeDatabase.dataAdd.push(user)
-    return user
-  }
-
-}
-
-
-class FindUserByEmailRepositorySpy implements IfindByEmailUserRepository{  
-  callMethodFindCount:number = 0;
-  constructor(public readonly fakeDatabase:IfakeDatabase){}
-
-  async findById(id:string):Promise<Either<null | undefined, UserDTO>>{
-    this.callMethodFindCount++;
-    this.fakeDatabase.dataId = id
-    const result = this.fakeDatabase.dataAdd.find(value => value.id === id);
-
-    if(!result){
-      left(undefined);
-    };
-
-    return right(result as UserDTO)
+    return `${Input.password}-hashed`;
   }
 }
 
 
-type ISut = {
-  sut: CreateUserUseCase;
-  addUserRepository:AddUserRepositorySpy;
-  findUserByEmailRepository:FindUserByEmailRepositorySpy;
-}
-const makeSut = ():ISut => {
-  const addUserRepository = new AddUserRepositorySpy(FakeDatabase)
-  const findUserByEmailRepository = new FindUserByEmailRepositorySpy(FakeDatabase)
 
-  const sut = new CreateUserUseCase(
-    addUserRepository,
-    findUserByEmailRepository
-  );
 
-  return {
-    sut,
-    addUserRepository,
-    findUserByEmailRepository
-  }
-}
 
-const returnFakeData = ():UserDTO => {
-    const data:UserDTO = {
-      name:"any_name",
-      email:"any_email",
-      password:'any_password',
-      id:'any_id',
-      created_at: "2022-01-27T17:36:47.547Z"
+
+const makeSut = () => {
+    const findByPlaceRepository = new FindByPlaceRepository();
+    const addUserRepository = new AddUserRepository();
+    const createHash = new CreateHash();
+
+    const sut = new CreateUserUseCase(addUserRepository, createHash, findByPlaceRepository)
+    return {
+      sut
     }
-  return  data;
 }
-describe("CreateUserUseCase", () => {
 
-  it('Espero que CreateUserUseCase vai receber corretamente os dados passados.', async () => { 
-    const { sut }   = makeSut();
-    const data = returnFakeData()
-    await sut.execute(data);
-    expect(sut.name).toEqual(data.name);
-    expect(sut.email).toEqual(data.email);
+describe('CreateUserUseCase', () => {
+  it('Expero que CreateUserUseCase.execute receba os dados correctos', async () => {
+    const { sut } = makeSut()
+    const body = {
+      name:'yazalde',
+      email:'yazaldefill@gmail',
+      password:'any__password'
+    }
+    const result = await sut.execute(body)
+
+    expect(result.value.name).toBe(body.name)
   })
   
-  it('Espero que o CreateUserUseCase vai chamar o createUserRepository.findById com id correcto.', async () => { 
-    const { sut, findUserByEmailRepository }   = makeSut();
-    const data = returnFakeData()
-    await sut.execute(data);
-    expect(findUserByEmailRepository.fakeDatabase.dataId).toEqual(data.id);
-  })
-  
-  it('Espero que Quando chamar o createUserRepository.findById com o id que nao existe do banco dados ele nao retorne nada', async () => { 
-    const { sut }   = makeSut();
-    const data = returnFakeData()
-   const result =  await sut.execute(data);
-    expect(result.value).toHaveProperty('created_at'); 
-  })
-  
-  it('Espero que Quando chamar o createUserRepository.findById com o id que  existe do banco dados ele retorne o user', async () => { 
-    const { sut }   = makeSut();
-    const data = returnFakeData()
-   const result =  await sut.execute(data);
-    expect(result.value).toEqual(data)
-  })  
-  it('Espero que Quando chamar o createUserRepository.findById e nao retornar  o user ele vai chamar o createUserRepository.add', async () => { 
-    const { sut, findUserByEmailRepository, addUserRepository }   = makeSut();
-    const data = returnFakeData()
-    await sut.execute(data);
+  it('Expero que CreateUserUseCase.execute com os parametros certos seja salvo o user', async () => {
+    const { sut } = makeSut()
+    const body = {
+      name:'yazal',
+      email:'yazalde@gmail',
+      password:'any__password'
+    }
+    const result = await sut.execute(body)
 
-    expect(findUserByEmailRepository.callMethodFindCount).toBe(1); 
-    expect(addUserRepository.callMethodAddCount).toBe(1); 
+    expect(result.value).toHaveProperty('created_at')
   })
- 
-  it('Espero que Quando chamar o createUserRepository.findById com o id que nao existe o createUserRepository.add vai retornar um novo usuario', async () => { 
-    const { sut }  = makeSut();
-    const data = returnFakeData()
-   const result =  await sut.execute(data);
 
-    expect(result.value).toHaveProperty('created_at'); 
+  it('Expero que CreateUserUseCase.execute com os parametros que ja existem seja retornado o AlreadyExistsError', async () => {
+    const { sut } = makeSut()
+    const body = {
+      name:'yazal',
+      email:'yazaldefill@gmail',
+      password:'any__password'
+    }
+    const result = await sut.execute(body)
+
+    expect(result.value.name).toBe(new AlreadyExistsError().name)
   })
 
 })

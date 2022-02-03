@@ -44,7 +44,7 @@ const returnUserFake = ():UserDTO => {
     name:'any_name',
     email:'any_email',
     password:'any_password',
-    created_at:'any_date'
+    created_at:new Date()
   };
   
   return user
@@ -54,10 +54,10 @@ const returnUserFake = ():UserDTO => {
 describe('AddUserRepository', () => {
   it('Espero que quando chamar AddUserRepository.add seja chamado com os parametros certos', async () => {
     const { sut, postGreRepository } = makeSut();
+    const data = returnUserFake()
+    await sut.add(data)
 
-    await sut.add(returnUserFake())
-
-    expect(postGreRepository.add).toHaveBeenCalledWith(returnUserFake());
+    expect(postGreRepository.add).toHaveBeenCalledWith(data);
   })
   
   it('Espero que quando chamar AddUserRepository.add seja chamado o method save', async () => {

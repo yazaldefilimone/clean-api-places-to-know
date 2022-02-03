@@ -1,5 +1,7 @@
 import { UserDTO } from "@/data/contracts/dtos";
-
+type prop = {
+  email:string
+}
 export interface IPostGreFindRepository{
-  findOne:(email:string) => Promise<undefined | UserDTO>
+  findOne:({ email }:prop ) => Promise<undefined | UserDTO>
 }

@@ -10,8 +10,7 @@ export class CreateUserController implements IUserController{
   
   async handle(Request:HttpRequest<Omit<User, 'id'>>): Promise<HttpResponse>{
     try{
-
-      const UserOrError = await this.createUserUseCase.execute(Request.body);
+        const UserOrError = await this.createUserUseCase.execute(Request.body as any);
 
       if(UserOrError.isLeft()){
         return badRequest(UserOrError.value)
@@ -20,6 +19,7 @@ export class CreateUserController implements IUserController{
       return ok(UserOrError.value)
       
     } catch(error) {
+      console.log(error)
       return serverError(error)
     }
   }
