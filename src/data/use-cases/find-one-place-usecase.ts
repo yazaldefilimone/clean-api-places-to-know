@@ -25,10 +25,7 @@ export class FindOnePlaceUseCase implements IfindOnePlaceUseCase{
     const PlaceOfSearchOrError = await this.index({ name, id })
 
     if(PlaceOfSearchOrError.isLeft()){
-      const error =  name ? name : id
-
-      console.log(name, id)
-      return left(new NotFound(error));
+      return left(new NotFound('place'));
     }
 
      const place:PlaceDTO = PlaceOfSearchOrError.value as any

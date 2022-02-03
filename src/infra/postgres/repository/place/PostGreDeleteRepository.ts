@@ -7,11 +7,8 @@ import { PlaceDTO } from "@/data/contracts/dtos";
 @EntityRepository(Place)
 export class PostGreDeleteRepository extends Repository<Place> implements IPostGreDeleteRepository{
   async deletePlace({ id }:PlaceDTO | any):Promise<any>{
-    const result = await this.delete(id);
+    await this.delete(id);
 
-    console.log(result)
-
-    return
   }
 }
 

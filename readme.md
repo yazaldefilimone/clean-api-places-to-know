@@ -18,7 +18,9 @@ Nesta api decide tentar usar tudo que sei sobre arquitetura e TDD,
 e o resultadp foi que a api esta  desacoplada do express e o typeorm da minha aplicação assim posso tanso usar mongoose ou sequileze ou Grapsql ou harpi nos e pode achar que tem muitas interfaces mas neste projeto eu decidi seguir um prencipio que ignorava muito o interface sefraace principal.
 e totalmente independete de qualquer biblioteca ou fremawork.
 **NB: commintei com arquivo .env pra ajudar nas varias de ambienete**
-
+
+**NB: se quiser fazer build aconselho confivurar a connection com DB usanado o arquivo ormconfig.js pra poder dir o caminho absuluto das entities quando estiverem na pasta dist **
+
 > ## Princípios
 
 * Single Responsibility

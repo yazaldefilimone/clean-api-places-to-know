@@ -20,6 +20,7 @@ export class CreatePlaceController implements IPlaceController{
       return ok(PlaceOrError.value)
       
     } catch(error) {
+      console.log(error)
       return serverError(error)
     }
   }

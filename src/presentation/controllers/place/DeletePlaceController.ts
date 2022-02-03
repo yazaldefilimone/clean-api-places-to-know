@@ -21,7 +21,7 @@ export class DeletePlaceController implements IPlaceController{
       }
 
       
-      return ok({ok: result})
+      return ok({ok: 'delete place sucessfully!!!'})
       
     } catch(error) {
       return serverError(error)

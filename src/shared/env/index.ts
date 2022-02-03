@@ -5,5 +5,5 @@ export default {
   bcrypt_hash:process.env.BCRYPT_HASH,
   api_url: process.env.API_URL,
   api_secret_key: process.env.API_SECRET_KEY,
-  api_acess_key: process.env.API_ACESS_KEY,
+  api_acess_key: process.env.API_ACESS_KEY || 'llfnpJUHdZkM7FmCj2zIDjYUfvGppMqBmSm7aV7z9Yc'
 }
